@@ -1,0 +1,6 @@
+__pycache__
+*.pt
+.idea/*
+venv
+*.pyc
+*.h5

@@ -5,7 +5,7 @@ from flask_cors import CORS
 import os
 import uuid
 from gevent.pywsgi import WSGIServer
-from chexnet import Xray
+from chexnet.chexnet import Xray
 from util import base64_to_pil, np_to_base64, base64_to_bytes
 import numpy as np
 

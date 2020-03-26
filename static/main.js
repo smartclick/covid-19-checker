@@ -37,6 +37,7 @@ var imageDisplay = document.getElementById("image-display");
 var uploadCaption = document.getElementById("upload-caption");
 var predResult = document.getElementById("pred-result");
 var loader = document.getElementById("loader");
+var chartContainer = document.getElementById("chart-container");
 
 //========================================================================
 // Main button events
@@ -71,6 +72,7 @@ function clearImage() {
   hide(imageDisplay);
   hide(loader);
   hide(predResult);
+  chartContainer.innerHTML = "";
   show(uploadCaption);
 
   imageDisplay.classList.remove("loading");
@@ -91,7 +93,7 @@ function previewFile(file) {
     // reset
     predResult.innerHTML = "";
     imageDisplay.classList.remove("loading");
-
+    chartContainer.innerHTML = "";
     displayImage(reader.result, "image-display");
   };
 }
@@ -136,7 +138,45 @@ function displayResult(data) {
   }else{
     predResult.innerHTML = data.result + "<br><br>Type: " + data.type + "<br>Accuracy: " + data.probability;
   }
+  if (data.condition_similarity_rate){
+    chart = Highcharts.chart('chart-container', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {text: 'Condition similarity rate'},
+        tooltip: {pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'},
+        accessibility: {
+            point: {
+                valueSuffix: '%'
+            }
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        fontSize: 14
+                    }
+                }
+            }
+        },
+        series: [{
+            name: 'Brands',
+            colorByPoint: true,
+            data: data.condition_similarity_rate
+        }]
+    });
+    }
+    if (window.screen.width < 600)
+    chart.setSize(window.screen.width-10);
   show(predResult);
+  show(chartContainer);
 }
 
 function hide(el) {

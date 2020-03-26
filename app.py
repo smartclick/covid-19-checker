@@ -60,10 +60,16 @@ def predict():
                 "ContentType": "image/jpg"
             }
         )
+
+        condition_similarity_rate = []
+        for name, prob in img_result['condition similarity rate']:
+            condition_similarity_rate.append({'y': round(float(prob), 2), 'name': name})
+
         return jsonify(
             result=img_result['result'],
             type=img_result['type'],
-            probability=str(round(img_result['probability'], 2)) + "%"
+            probability=str(round(img_result['probability'], 2)) + "%",
+            condition_similarity_rate=condition_similarity_rate
         ), 200
     else:
         file_name = "NOT_DETECTED/%s.jpg" % str(uuid.uuid4())

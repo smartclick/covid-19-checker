@@ -49,7 +49,7 @@ class Xray:
         model_eff = EfficientNet.from_name(model_name="efficientnet-b0",
                                            params=[1.0, 1.0, 224, 0.2],
                                            override_params={'num_classes': 2})
-        state_dict = torch.load(os.path.join(models_directory, "effnet_weight.pth"))
+        state_dict = torch.load(os.path.join(models_directory, "effnet_weight.pth"), map_location=device)
         model_eff.load_state_dict(state_dict)
 
         self.model_eff = model_eff.to(device).eval()

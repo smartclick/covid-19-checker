@@ -136,7 +136,7 @@ function displayResult(data) {
   if (data.error){
     predResult.innerHTML = data.result + "<br><br>" + data.error;
   }else{
-    predResult.innerHTML = data.result + "<br><br>Type: " + data.type + "<br>Accuracy: " + data.probability;
+    predResult.innerHTML = data.result + "<br><br>Type: " + data.type + "<br>Confidence: " + data.probability;
   }
   if (data.condition_similarity_rate){
     chart = Highcharts.chart('chart-container', {

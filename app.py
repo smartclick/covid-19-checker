@@ -45,12 +45,11 @@ def predict():
     means = rgb_image_np.mean(axis=(0, 1))
     if 35 < np.average(stds) < 95 and 60 < np.average(means) < 180:
         img_result = x_ray.predict(img)
-
         file_name = "%s/%s/%s(%s).jpg" % (
             img_result['result'],
             img_result['type'],
             str(uuid.uuid4()),
-            str(round(img_result['probability'], 4)).replace('.', '_')
+            str(round(img_result['probability'], 2)).replace('.', '_')
         )
         s3.upload_fileobj(
             base64_to_bytes(request.json),
@@ -64,7 +63,7 @@ def predict():
         return jsonify(
             result=img_result['result'],
             type=img_result['type'],
-            probability=str(round(100 * img_result['probability'], 2)) + "%"
+            probability=str(round(img_result['probability'], 2)) + "%"
         ), 200
     else:
         file_name = "NOT_DETECTED/%s.jpg" % str(uuid.uuid4())

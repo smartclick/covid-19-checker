@@ -64,7 +64,7 @@ class Xray:
     def predict_dense(self, image):
         x = self.transform_dense(image).to(self.device)
         out = self.model_dense(x).cpu().detach()
-        probas = softmax(out).mean(0)
+        probas = softmax(out*5).mean(0)
         return list(probas.numpy()*100)
 
     def predcit_eff(self, image):

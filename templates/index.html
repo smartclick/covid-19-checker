@@ -17,12 +17,15 @@
     <input type="button" value="Clear" class="button" onclick="clearImage();" />
   </div>
 
-  <div id="image-box">
-    <img id="image-display" />
-    <div id="pred-result" class="hidden"></div>
-    <svg id="loader" class="hidden" viewBox="0 0 32 32" width="32" height="32">
-      <circle id="spinner" cx="16" cy="16" r="14" fill="none"></circle>
-    </svg>
+  <div id="result-box">
+    <div id="image-box">
+      <img id="image-display" />
+      <div id="pred-result" class="hidden"></div>
+      <svg id="loader" class="hidden" viewBox="0 0 32 32" width="32" height="32">
+        <circle id="spinner" cx="16" cy="16" r="14" fill="none"></circle>
+      </svg>
+    </div>
+    <div id="chart-container"></div>
   </div>
   <div style="font-weight: bold;padding-bottom: 15px;">Disclaimer for health advice</div>
   <div style="max-width: 500px;font-size: 11px;text-align: center;">All content found on this Website, including: text, images were created for informational purposes only. The Content is not intended to be a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition. Never disregard professional medical advice or delay in seeking it because of something you have read on this Website.</div>

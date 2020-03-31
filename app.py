@@ -40,11 +40,8 @@ def predict():
     except Exception:
         return jsonify(error="expected string or bytes-like object"), 422
 
-    rgb_image_np = np.array(img.convert('RGB'))
-    stds = rgb_image_np.std(axis=(0, 1))
-    means = rgb_image_np.mean(axis=(0, 1))
-    if 35 < np.average(stds) < 95 and 60 < np.average(means) < 180:
-        img_result = x_ray.predict(img)
+    img_result = x_ray.predict(img)
+    if img_result['result'] != "RANDOM":
         file_name = "%s/%s/%s(%s).jpg" % (
             img_result['result'],
             img_result['type'],

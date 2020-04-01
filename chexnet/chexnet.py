@@ -1,5 +1,6 @@
 import torch
 from torchvision.transforms import transforms
+from torchvision.models import resnet18
 from torch.nn.functional import softmax
 import os
 
@@ -59,7 +60,19 @@ class Xray:
                                                   transforms.ToTensor(),
                                                   transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
                                                 ])
+        #Resnet for detecting xray out of random images
+        resnet_state_dict = torch.load(os.path.join(models_directory, "nonxray.pth"), map_location=device)
+        model_resnet = resnet18()
+        model_resnet.fc = torch.nn.Linear(model_resnet.fc.in_features, 2)
+        model_resnet.load_state_dict(resnet_state_dict)
 
+        self.model_resnet = model_resnet.to(device).eval()
+
+        self.transform_resnet = transforms.Compose([transforms.Resize(100),
+                                                    transforms.CenterCrop(64),
+                                                    transforms.ToTensor(),
+                                                    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+                                                    ])
 
     def predict_dense(self, image):
         x = self.transform_dense(image).to(self.device)
@@ -73,8 +86,16 @@ class Xray:
         proba = softmax(out)[0, 0].item()
         return proba*100
 
+    def predict_resnet(self, image):
+        x = self.transform_resnet(image).unsqueeze(0).to(self.device)
+        out = self.model_resnet(x).cpu().detach()
+        return torch.argmax(out, dim=1).item()
+
     def predict(self, image):
         image = image.convert("RGB")
+        is_xray = self.predict_resnet(image)
+        if not is_xray:
+            return {"result": "RANDOM"}
         healthy_proba = self.predcit_eff(image)
         disease_proba = self.predict_dense(image)
         disease_proba = list(zip(self.CLASS_NAMES, disease_proba))

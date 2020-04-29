@@ -33,6 +33,8 @@
 [ ] - Train classifier on pneumonia detection  
 [ ] - Fine-tune the model on COVID-19  
 
+# Model performance
+The model has 93% on detecting one of the 14 conditions. The model has been tested on a limited dataset.
 
 # Deployment
 

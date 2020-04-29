@@ -81,21 +81,54 @@ function clearImage() {
 function previewFile(file) {
   // show the preview of the image
   var fileName = encodeURI(file.name);
+  if (file['type'].split('/')[0] == "image"){
+    var reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        imagePreview.src = URL.createObjectURL(file);
 
-  var reader = new FileReader();
-  reader.readAsDataURL(file);
-  reader.onloadend = () => {
-    imagePreview.src = URL.createObjectURL(file);
+        show(imagePreview);
+        hide(uploadCaption);
 
-    show(imagePreview);
-    hide(uploadCaption);
+        // reset
+        predResult.innerHTML = "";
+        imageDisplay.classList.remove("loading");
+        chartContainer.innerHTML = "";
+        displayImage(reader.result, "image-display");
+      };
+  }
+  else {
+      let formData = new FormData();
+      formData.append('file', file);
+      fetch("/converter", {
+        method: "POST",
+        body: formData
+      }).then(response => response.blob())
+      .then(image => {
+          if (image['type'].split('/')[0] == "image"){
+            // Then create a local URL for that image and print it
+              outside = URL.createObjectURL(image);
+              file = image;
+              var reader = new FileReader();
+              reader.readAsDataURL(file);
+              reader.onloadend = () => {
+                imagePreview.src = URL.createObjectURL(file);
 
-    // reset
-    predResult.innerHTML = "";
-    imageDisplay.classList.remove("loading");
-    chartContainer.innerHTML = "";
-    displayImage(reader.result, "image-display");
-  };
+                show(imagePreview);
+                hide(uploadCaption);
+
+                // reset
+                predResult.innerHTML = "";
+                imageDisplay.classList.remove("loading");
+                chartContainer.innerHTML = "";
+                displayImage(reader.result, "image-display");
+              };
+          }else{
+            window.alert("Oops! File format is wrong.");
+          }
+
+      })
+  }
 }
 
 //========================================================================

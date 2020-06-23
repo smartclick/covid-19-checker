@@ -44,9 +44,10 @@ def converter():
         file = request.files.get('file')
         images_array = dcmread(DicomBytesIO(file.read())).pixel_array
         img = Image.fromarray(images_array)
+        img = img.convert('RGB')
 
         img_io = BytesIO()
-        img.point(lambda i: i * (1. / 256)).convert('L').save(img_io, 'PNG')
+        img.save(img_io, 'PNG')
         img_io.seek(0)
         return send_file(img_io, mimetype='image/png')
 

@@ -1,6 +1,11 @@
+import base64
+from io import BytesIO
+from pydicom import dcmread
+from pydicom.filebase import DicomBytesIO
 import boto3
+from PIL import Image
 from botocore.config import Config
-from flask import Flask, request, redirect, jsonify, render_template
+from flask import Flask, request, redirect, jsonify, render_template, send_file
 from flask_cors import CORS
 import os
 import uuid
@@ -31,6 +36,23 @@ s3 = boto3.client(
 def index():
     # Main page
     return render_template('index.html')
+
+
+@app.route('/converter', methods=['POST'])
+def converter():
+    try:
+        file = request.files.get('file')
+        images_array = dcmread(DicomBytesIO(file.read())).pixel_array
+        img = Image.fromarray(images_array)
+        img = img.convert('RGB')
+
+        img_io = BytesIO()
+        img.save(img_io, 'PNG')
+        img_io.seek(0)
+        return send_file(img_io, mimetype='image/png')
+
+    except Exception:
+        return jsonify(error="invalid file"), 422
 
 
 @app.route('/predict', methods=['POST'])

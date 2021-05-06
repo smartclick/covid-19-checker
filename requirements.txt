@@ -4,7 +4,7 @@ numpy
 gevent
 pillow
 h5py
-Flask-Cors==3.0.8
+Flask-Cors==3.0.9
 boto3==1.10.14
 botocore==1.13.14
 torch==1.4.0
